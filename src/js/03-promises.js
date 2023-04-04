@@ -13,9 +13,11 @@ btnEl.setAttribute("disabled", "");
 formEl.addEventListener("input", checkInputValue);
 
 function checkInputValue() {
-  if (Number(delayEl.value) && Number(stepEl.value) && Number(amountEl.value)) {
-    btnEl.removeAttribute("disabled");
+  if (Number(delayEl.value) < 0 || Number(stepEl.value) < 0 || Number(amountEl.value) <= 0) {
+    Notiflix.Notify.info("Value can`t be negative or zero");
+    return;
   }
+   btnEl.removeAttribute("disabled");
 }
 
 formEl.addEventListener("submit", handlerFormSubmit);
@@ -26,20 +28,13 @@ function handlerFormSubmit(event) {
   let stepValue = Number(stepEl.value);
   let amount = Number(amountEl.value);
 
-  if (delayValue > 0
-    || stepValue > 0
-    || amount >= 0) {
-    Notiflix.Notify.info("Value can`t be negative or zero");
-    return;
-  }
-
-
-  for (let i = 1; i <= amount; i++) {
-    createPromise(i, delayValue)
-      .then(resolve => Notiflix.Notify.success(resolve))
-      .catch(reject => Notiflix.Notify.failure(reject));
-    delayValue += stepValue;
-  }
+    for (let i = 1; i <= amount; i++) {
+      createPromise(i, delayValue)
+        .then(resolve => Notiflix.Notify.success(resolve))
+        .catch(reject => Notiflix.Notify.failure(reject));
+      delayValue += stepValue;
+    }
+  
 }
 
 const createPromise = (position, delay) => {
